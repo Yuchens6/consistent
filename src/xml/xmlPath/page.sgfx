@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?dom version="1.0"?>
+<?scade_release version="1.0"?>
+<specification oid="{dcfc1c75-2a75-4860-af1f-b91fe2999e74}">
+    <IDE>
+        <project path="C:/Users/Flora/Desktop/t0617"/>
+        <ratio horizontal="1" vertical="1"/>
+    </IDE>
+    <symbology>
+        <colorMode value="RGBA"/>
+        <dimension height="800" width="800"/>
+    </symbology>
+    <children>
+        <layer oid="{6a85ed4c-ec5d-4d37-a26d-6d8c7b20b8eb}">
+            <pathFromRoot value="1"/>
+            <declaration>
+                <inputs>
+                    <input name="inside" oid="{3c5875a8-a257-4263-94f0-9bdaf808de5b}" type="int">
+                        <init>0</init>
+                    </input>
+                </inputs>
+				<inputs>
+                    <input name="outlinecolor" oid="{3c5875a8-a257-4263-94f0-9bdaf808de5b}" type="int">
+                        <init>41</init>
+                    </input>
+                </inputs>
+            </declaration>
+            <properties name="layer_1">
+                <visible>
+                    <init>true</init>
+                </visible>
+                <origin>
+                    <x>
+                        <init>0.0</init>
+                    </x>
+                    <y>
+                        <init>0.0</init>
+                    </y>
+                </origin>
+                <id>
+                    <init>1</init>
+                </id>
+                <ratio horizontal="1" vertical="1"/>
+            </properties>
+            <children>
+                <rectangle oid="{35a842d1-a4e6-4e02-b237-182109d5f3f6}">
+                    <pathFromRoot value="0"/>
+                    <properties name="rectangle">
+                        <visible>
+                            <init>true</init>
+                        </visible>
+                        <firstPoint>
+                            <x>
+                                <init>90</init>
+                            </x>
+                            <y>
+                                <init>150</init>
+                            </y>
+                        </firstPoint>
+                        <thirdPoint>
+                            <x>
+                                <init>310</init>
+                            </x>
+                            <y>
+                                <init>260</init>
+                            </y>
+                        </thirdPoint>
+                        <lineWidth>
+                            <init>0</init>
+                        </lineWidth>
+                        <lineStipple>
+                            <init>0</init>
+                        </lineStipple>
+                        <lineCap>
+                            <init>round</init>
+                        </lineCap>
+                        <haloing>
+                            <init>true</init>
+                        </haloing>
+                        <haloColor>
+                            <init>-1</init>
+                        </haloColor>
+                        <outlineColor>
+                            <init>2</init>
+							<expr>outlinecolor</expr>
+                        </outlineColor>
+                        <outlineOpacity>
+                            <init>255</init>
+                        </outlineOpacity>
+                        <fillColor>
+                            <init>-1</init>
+                            <expr>inside?31:11</expr>
+                        </fillColor>
+                        <fillOpacity>
+                            <init>255</init>
+                        </fillOpacity>
+                        <polygonSmooth>
+                            <init>true</init>
+                        </polygonSmooth>
+                        <textureControl>
+                            <init>false</init>
+                        </textureControl>
+                        <texture horizAlign="center" horizPattern="1.0" vertAlign="middle" vertPattern="1.0">
+                            <textureId>
+                                <init>-1</init>
+                            </textureId>
+                        </texture>
+                        <modulate>
+                            <init>false</init>
+                        </modulate>
+                        <tessellate>
+                            <init>false</init>
+                        </tessellate>
+                    </properties>
+                </rectangle>
+                <rectangleArea oid="{e015244b-1b30-447f-9af4-99088e5b6804}">
+                    <pathFromRoot value="1"/>
+                    <properties name="rectanglearea">
+                        <enable>
+                            <init>true</init>
+                        </enable>
+                        <pointerId>
+                            <init>-1</init>
+                        </pointerId>
+                        <firstPoint>
+                            <x>
+                                <init>99</init>
+                            </x>
+                            <y>
+                                <init>152</init>
+                            </y>
+                        </firstPoint>
+                        <thirdPoint>
+                            <x>
+                                <init>299</init>
+                            </x>
+                            <y>
+                                <init>252</init>
+                            </y>
+                        </thirdPoint>
+                        <output>
+                            <inside>
+                                <expr>inside</expr>
+                            </inside>
+                        </output>
+                    </properties>
+                </rectangleArea>
+            </children>
+        </layer>
+    </children>
+</specification>
