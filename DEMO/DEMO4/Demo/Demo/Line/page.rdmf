@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?dom version="1.0"?>
+<?scade_release version="1.0"?>
+<specification oid="{5b3f817e-3f40-434c-8839-178f93368019}">
+    <IDE>
+        <project path="E://Line"/>
+        <ratio horizontal="1" vertical="1"/>
+    </IDE>
+    <symbology>
+        <colorMode value="RGBA"/>
+        <dimension height="800" width="800"/>
+    </symbology>
+    <children>
+        <layer oid="{5108ea23-67aa-43f3-ba6b-bdb227622ca3}">
+            <pathFromRoot value="1"/>
+            <declaration/>
+            <properties name="layer_1">
+                <visible>
+                    <init>true</init>
+                </visible>
+                <origin>
+                    <x>
+                        <init>0.0</init>
+                    </x>
+                    <y>
+                        <init>0.0</init>
+                    </y>
+                </origin>
+                <id>
+                    <init>1</init>
+                </id>
+                <ratio horizontal="1" vertical="1"/>
+            </properties>
+            <children>
+                <line oid="{0b9b7e1a-ee64-4ada-ad41-59850c37746e}">
+                    <pathFromRoot value="0"/>
+                    <properties name="line">
+                        <visible>
+                            <init>true</init>
+                        </visible>
+                        <points>
+                            <point>
+                                <x>
+                                    <init>-205</init>
+                                </x>
+                                <y>
+                                    <init>88</init>
+                                </y>
+                            </point>
+                            <point>
+                                <x>
+                                    <init>-133</init>
+                                </x>
+                                <y>
+                                    <init>-136</init>
+                                </y>
+                            </point>
+                            <point>
+                                <x>
+                                    <init>72</init>
+                                </x>
+                                <y>
+                                    <init>103</init>
+                                </y>
+                            </point>
+                            <point>
+                                <x>
+                                    <init>178</init>
+                                </x>
+                                <y>
+                                    <init>-130</init>
+                                </y>
+                            </point>
+                        </points>
+                        <lineWidth>
+                            <init>0</init>
+                        </lineWidth>
+                        <lineStipple>
+                            <init>0</init>
+                        </lineStipple>
+                        <lineCap>
+                            <init>round</init>
+                        </lineCap>
+                        <haloing>
+                            <init>true</init>
+                        </haloing>
+                        <haloColor>
+                            <init>-1</init>
+                        </haloColor>
+                        <outlineColor>
+                            <init>15</init>
+                        </outlineColor>
+                        <outlineOpacity>
+                            <init>255.00</init>
+                        </outlineOpacity>
+                    </properties>
+                </line>
+            </children>
+        </layer>
+    </children>
+</specification>

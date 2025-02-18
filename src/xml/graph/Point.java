@@ -3,6 +3,8 @@ package xml.graph;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.Objects;
+
 public class Point {
     private String x;
     private String y;
@@ -45,5 +47,18 @@ public class Point {
         }
 
         return point;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Objects.equals(x, point.x) && Objects.equals(y, point.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

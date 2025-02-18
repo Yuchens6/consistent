@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project id="{ef5c7952-a605-4804-b2b6-29d8b9510aaa}" oid_count="1" type="0">
+    <props/>
+    <roots>
+        <Folder id="11" extensions="sct;swt;sst;sft;stt" name="Resource Files">
+            <elements>
+                <FileRef id="12" persistAs="./color_table.sct"/>
+                <FileRef id="13" persistAs="./line_width_table.swt"/>
+                <FileRef id="14" persistAs="./line_stipple_table.sst"/>
+                <FileRef id="15" persistAs="./font_table.sft"/>
+                <FileRef id="17" persistAs="./texture_table.stt"/>
+            </elements>
+        </Folder>
+        <Folder id="19" extensions="rdmf;rdrf;pgfx;asfx;trace" name="Model Files">
+            <elements>
+                <FileRef id="{5b3f817e-3f40-434c-8839-178f93368019}" persistAs="./page.rdmf"/>
+            </elements>
+        </Folder>
+    </roots>
+    <configurations>
+        <Configuration id="21" name="Code"/>
+        <Configuration id="42" name="Windows"/>
+    </configurations>
+</Project>

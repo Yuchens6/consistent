@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?dom version="1.0"?>
+<?scade_release version="1.0"?>
+<specification oid="{f02eab0d-efaa-4da2-aa7b-f18c4804ac3b}">
+    <IDE>
+        <project path="E:/Crown"/>
+        <ratio horizontal="1" vertical="1"/>
+    </IDE>
+    <symbology>
+        <colorMode value="RGBA"/>
+        <dimension height="800" width="800"/>
+    </symbology>
+    <children>
+        <layer oid="{cc445238-dbf4-4a15-a1b1-29a42840a2e7}">
+            <pathFromRoot value="1"/>
+            <declaration/>
+            <properties name="layer_1">
+                <visible>
+                    <init>true</init>
+                </visible>
+                <origin>
+                    <x>
+                        <init>0.0</init>
+                    </x>
+                    <y>
+                        <init>0.0</init>
+                    </y>
+                </origin>
+                <id>
+                    <init>1</init>
+                </id>
+                <ratio horizontal="1" vertical="1"/>
+            </properties>
+            <children>
+                <crown oid="{464f3cc7-db61-4961-bf45-60608c3c6bc8}">
+                    <pathFromRoot value="0"/>
+                    <properties name="crown">
+                        <visible>
+                            <init>true</init>
+                        </visible>
+                        <center>
+                            <x>
+                                <init>-7.00001</init>
+                            </x>
+                            <y>
+                                <init>46</init>
+                            </y>
+                        </center>
+                        <radius>
+                            <init>185.00</init>
+                        </radius>
+                        <lineWidth>
+                            <init>0</init>
+                        </lineWidth>
+                        <lineStipple>
+                            <init>0</init>
+                        </lineStipple>
+                        <lineCap>
+                            <init>round</init>
+                        </lineCap>
+                        <haloing>
+                            <init>true</init>
+                        </haloing>
+                        <haloColor>
+                            <init>-1</init>
+                        </haloColor>
+                        <outlineColor>
+                            <init>21</init>
+                        </outlineColor>
+                        <outlineOpacity>
+                            <init>255.00</init>
+                        </outlineOpacity>
+                        <fillColor>
+                            <init>61</init>
+                        </fillColor>
+                        <fillOpacity>
+                            <init>255.00</init>
+                        </fillOpacity>
+                        <polygonSmooth>
+                            <init>true</init>
+                        </polygonSmooth>
+                        <texture horizAlign="center" horizPattern="1.0" vertAlign="middle" vertPattern="1.0">
+                            <textureId>
+                                <init>-1</init>
+                            </textureId>
+                        </texture>
+                        <modulate>
+                            <init>false</init>
+                        </modulate>
+                        <startAngle>
+                            <angle>
+                                <init>30</init>
+                            </angle>
+                        </startAngle>
+                        <endAngle>
+                            <angle>
+                                <init>150</init>
+                            </angle>
+                        </endAngle>
+                        <orientation clockwise="false"/>
+                        <thickness>
+                            <init>60</init>
+                        </thickness>
+                    </properties>
+                </crown>
+            </children>
+        </layer>
+    </children>
+</specification>

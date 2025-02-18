@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class xmlAna {
+    public static Rectangle re;
     public static void analysis(String xmlPath) throws IOException, SAXException, ParserConfigurationException {
         DocumentBuilderFactory factory=DocumentBuilderFactory.newInstance();
         DocumentBuilder builder=factory.newDocumentBuilder();
@@ -29,9 +30,10 @@ public class xmlAna {
     }
     private static void dfsXML(Node node){
 //        System.out.println(node.getNodeName());
-        if(node.getNodeName().equals("rectangleArea")){
-            RectangleArea rectangle=new RectangleArea();
-            rectangle = rectangle.generateRectangleArea(node);
+        if(node.getNodeName().equals("rectangle")){
+            Rectangle rectangle=new Rectangle();
+            rectangle = rectangle.generateRectangle(node);
+            re = rectangle;
             System.out.println(rectangle.toString());
         }
 
@@ -43,6 +45,10 @@ public class xmlAna {
         }
     }
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException {
+        String cPath = "src/xml/cPath/layer_1_draw.c";
         analysis("src/xml/xmlPath/page.sgfx");
+        cAna c = new cAna();
+        c.analysis(cPath);
+        System.out.println(re.equals(c.re));
     }
 }

@@ -78,7 +78,7 @@
                             <init>true</init>
                         </haloing>
                         <haloColor>
-                            <init>-1</init>
+                            <init>-2</init>
                         </haloColor>
                         <outlineColor>
                             <init>2</init>

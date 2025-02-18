@@ -1,5 +1,7 @@
 package xml.graph;
 
+import java.util.Objects;
+
 public class Usual {
     private String pathFromRoot;
     private String visible;
@@ -102,5 +104,50 @@ public class Usual {
 
     public void setOutlineOpacity(String outlineOpacity) {
         this.outlineOpacity = outlineOpacity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usual usual = (Usual) o;
+        if(!lineStipple.equals(usual.lineStipple)){
+            System.out.println("lineStipple is wrong"+lineStipple+usual.lineStipple);
+            return false;
+        }
+        if(!lineCap.equals(usual.lineCap)){
+            System.out.println("lineCap is wrong");
+            return false;
+        }
+        if(!haloColor.equals(usual.haloColor)){
+            System.out.println("haloColor is wrong");
+            return false;
+        }
+        if(!haloing.equals(usual.haloing)){
+            System.out.println("haloing is wrong");
+            return false;
+        }
+        if(!outlineOpacity.equals(usual.outlineOpacity)){
+            System.out.println("outlineOpacity is wrong");
+            return false;
+        }
+        if (!lineWidth.equals(usual.lineWidth)){
+            System.out.println("lineWidth is wrong");
+            return false;
+        }
+        return true;
+//        return
+//                Objects.equals(lineWidth, usual.lineWidth) &&
+//                Objects.equals(lineStipple, usual.lineStipple) &&
+//                Objects.equals(lineCap, usual.lineCap) &&
+//                Objects.equals(haloing, usual.haloing) &&
+//                Objects.equals(haloColor, usual.haloColor) &&
+//                Objects.equals(outlineColor, usual.outlineColor) &&
+//                Objects.equals(outlineOpacity, usual.outlineOpacity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pathFromRoot, visible, lineWidth, lineStipple, lineCap, haloing, haloColor, outlineColor, outlineOpacity);
     }
 }

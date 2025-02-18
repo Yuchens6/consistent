@@ -1,0 +1,465 @@
+库函数 sgpi_lines 算法说明及源码
+
+1 算法说明
+	sgpi_lines作为GCG调用的外部接口，提供线段（由1到多条单条线段的连线；单条线段是两种类型中的一种，两种类型为直线线段和圆弧线段）
+	sgpi_lines算法实现使用C语言，基于面向过程编程范式，采用协约式编程方式，整洁代码编程技术。
+	sgpi_lines算法实现业务主体内容及过程如下：
+	1）设置绘图参数；
+	2）绘制线段光晕；
+	3）绘制线段主体。
+	sgpi_lines具体算法实现的外部接口方法定义、相关自定义结构体及相关内部接口函数，详见第二章节源码内容。
+
+2 库函数源码
+2.1 外部接口方法源码
+void DLL_EXPORT sgpi_lines(
+            SGPI_Lines input,
+            PropertyLines appearance)
+{
+    GLboolean smooth;
+    smooth = is_line_smooth();
+    if (smooth != true)
+    {
+        sgpi_antialias(true);
+    }
+
+    sgpi_line_stipple(appearance.lineStipple);
+    sgpi_line_cap(appearance.lineCap);
+
+    #if ES_1_0
+    {
+        glEnableClientState(GL_VERTEX_ARRAY);
+    }
+    #endif // ES_1_0
+
+    GLfloat lineWidth;
+    if (appearance.haloing)
+    {
+        // halo
+        lineWidth = appearance.lineWidth.color;
+        sgpi_line_width(lineWidth);
+        sgpi_rgba_color(appearance.haloColor);
+
+        #if !ES_1_0
+        {
+            glBegin(GL_LINE_STRIP);
+        }
+        #endif // !ES_1_0
+        generate_lines(input);
+        #if !ES_1_0
+        {
+            glEnd();
+        }
+        #endif // !ES_1_0
+
+        if (is_GLfloat_more(lineWidth, 1, false, GLfloatValidValue))
+        {
+            sgpi_line_join(LineCorner_Bevel, false, input.point,
+                            input.pointCount, lineWidth / get_screen_max_size());
+        }
+        glFinish();
+
+        lineWidth = appearance.lineWidth.halo;
+    }
+    else
+    {
+        lineWidth = appearance.lineWidth.line;
+    }
+    sgpi_line_width(lineWidth);
+
+    appearance.outlineColor.alpha = appearance.outlineOpacity;
+    sgpi_rgba_color(appearance.outlineColor);
+
+    #if !ES_1_0
+    {
+        glBegin(GL_LINE_STRIP);
+    }
+    #endif // !ES_1_0
+    generate_lines(input);
+    #if !ES_1_0
+    {
+        glEnd();
+    }
+    #endif // !ES_1_0
+
+    if (is_GLfloat_more(lineWidth, 1, false, GLfloatValidValue))
+    {
+        sgpi_line_join(LineCorner_Bevel, false, input.point,
+                        input.pointCount, lineWidth / get_screen_max_size());
+    }
+    glFinish();
+
+    #if ES_1_0
+    {
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
+    #else
+    {
+        if (glIsEnabled(GL_LINE_STIPPLE))
+        {
+            glDisable(GL_LINE_STIPPLE);
+        }
+    }
+    #endif // !ES_1_0
+
+    if (smooth != true)
+    {
+        sgpi_antialias(smooth);
+    }
+} // sgpi_lines
+
+2.2 相关自定义结构体
+typedef struct
+{
+    GLuint pointCount;
+    Point* point;
+    GLfloat* angle;
+    GLboolean* clockwise;
+} SGPI_Lines;
+
+typedef struct
+{
+    LineWidth lineWidth;
+    Stipple lineStipple;
+    GLenum lineCap;
+    GLboolean haloing;
+    Color haloColor;
+    Color outlineColor;
+    GLubyte outlineOpacity;
+} PropertyLines;
+
+typedef struct
+{
+    GLfloat x;
+    GLfloat y;
+} Point;
+
+typedef struct {
+    GLfloat line;
+    GLfloat halo;
+    GLfloat color;
+} LineWidth;
+
+typedef struct {
+    GLuint* unitSize;
+    GLboolean* unitType;
+    GLboolean type;
+    GLuint count;
+} Stipple;
+
+typedef struct
+{
+    GLubyte red;
+    GLubyte green;
+    GLubyte blue;
+    GLubyte alpha;
+} Color;
+
+typedef struct
+{
+    GLfloat angle;
+    GLboolean clockwise;
+} ArcSegment;
+
+typedef struct
+{
+    Point center;
+    GLfloat radius;
+    Interval angle;
+    GLboolean clockwise;
+} SGPI_Arc;
+
+typedef struct
+{
+    GLfloat start;
+    GLfloat end;
+} Interval;
+
+2.3 相关内部接口函数
+GLboolean is_line_smooth()
+{
+    #if !ES_1_0
+    if (glIsEnabled(GL_LINE_SMOOTH))
+    {
+        return true;
+    }
+    else
+    {
+    #endif // !ES_1_0
+        return false;
+    #if !ES_1_0
+    }
+    #endif // !ES_1_0
+} // is_line_smooth
+
+void DLL_EXPORT sgpi_line_stipple(Stipple stipple)
+{
+    if (stipple.type)
+    {
+        if (glIsEnabled(GL_LINE_STIPPLE))
+        {
+            glDisable(GL_LINE_STIPPLE);
+        }
+        return;
+    }
+
+    if (!glIsEnabled(GL_LINE_STIPPLE))
+    {
+        glEnable(GL_LINE_STIPPLE);
+    }
+
+    GLuint count = stipple.count;
+    if (count > 6)
+    {
+        count = 6;
+    }
+
+    GLuint multiple = get_array_gcd(count, stipple.unitSize);
+    GLuint proportion = get_array_sum(count, stipple.unitSize) / multiple;
+    const GLint PatternSize = 16;
+    GLint duplicate = PatternSize / proportion;
+
+    if (duplicate == 0)
+    {
+        duplicate = 1;
+    }
+
+    GLushort num = 0;
+
+    for (GLint i = 1; i <= duplicate; i++)
+    {
+        for (GLint j = 0; j < count; j++)
+        {
+            for(GLint k = 1; k <= stipple.unitSize[j] / multiple; k++)
+            {
+                num <<= 1;
+                num +=  stipple.unitType[j];
+            }
+        }
+    }
+
+    glLineStipple(multiple, num);
+} // sgpi_line_stipple
+
+void sgpi_line_cap(GLenum lineCap)
+{
+    if (lineCap == LineCap_Round)
+    {
+        #if ES_1_0
+        {
+            glEnable(GL_POINT_SMOOTH);
+        }
+        #else
+        {
+            if (!glIsEnabled(GL_POINT_SMOOTH))
+                glEnable(GL_POINT_SMOOTH);
+        }
+        #endif // ES_1_0
+        glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    }
+} // sgpi_line_cap
+
+void DLL_EXPORT sgpi_line_width(GLfloat lineWidth)
+{
+    if (!is_GLfloat_more(lineWidth, 0, false, GLfloatValidValue))
+    {
+        #if SGPI_DEBUG
+        {
+            printf("[sgpi_line_width] lineWidth.line = %lf, is not within the valid range(> 0).\n", lineWidth);
+        }
+        #endif
+        return;
+    }
+    glLineWidth(lineWidth);
+} // sgpi_line_width
+
+void DLL_EXPORT sgpi_rgba_color(Color color)
+{
+    glColor4ub(color.red, color.green, color.blue, color.alpha);
+} // sgpi_rgba_color
+
+void DLL_EXPORT generate_lines(
+            SGPI_Lines input)
+{
+    if (input.pointCount == 0)
+    {
+        return;
+    }
+
+    ArcSegment arcSegment;
+    for (GLint i = 1; i < input.pointCount; i++)
+    {
+        if (is_GLfloat_equal(input.angle[i - 1], 0, GLfloatValidValue))
+        {
+            draw_line(input.point[i - 1], input.point[i]);
+        }
+        else
+        {
+            arcSegment.angle = input.angle[i - 1];
+            arcSegment.clockwise = input.clockwise[i - 1];
+            draw_arc_segment(input.point[i - 1], input.point[i], arcSegment, false);
+        }
+    } // for - i
+} // generate_lines
+
+void DLL_EXPORT draw_line(
+            Point start,
+            Point end)
+{
+    #if ES_1_0
+    {
+        GLfloat ps[] = {start.x, start.y, end.x, end.y};
+        glVertexPointer(2, GL_FLOAT, 0, ps);
+        glDrawArrays(GL_LINES, 0, 2);
+    }
+    #else
+    {
+        draw_point(start);
+        draw_point(end);
+    }
+    #endif // ES_1_0
+} // draw_line
+
+void DLL_EXPORT draw_point(
+            Point a)
+{
+    #if ES_1_0
+    {
+        GLfloat p[] = {a.x, a.y};
+        glVertexPointer(2, GL_FLOAT, 0, p);
+        glDrawArrays(GL_POINTS, 0, 1);
+    }
+    #else
+    {
+        glVertex2f(a.x, a.y);
+    }
+    #endif // ES_1_0
+} // draw_point
+
+void DLL_EXPORT draw_arc_segment(
+            Point start,
+            Point end,
+            ArcSegment arcSegment,
+            GLboolean filling)
+{
+    if (is_point_equal(start, end))
+    {
+        draw_point(end);
+        return;
+    }
+
+    GLfloat angle = arcSegment.angle;
+    normalize_angle(&angle);
+
+    if (is_GLfloat_equal(angle, 360, GLfloatValidValue))
+    {
+        draw_line(start, end);
+        return;
+    }
+
+    SGPI_Arc arc;
+    arc = convert_to_arc(start, end, arcSegment);
+    draw_arc(arc, filling);
+} // draw_arc_segment
+
+void DLL_EXPORT draw_arc(
+            SGPI_Arc arc,
+            GLboolean filling)
+{
+    #if ES_1_0
+    {
+        GLuint count;
+        count = get_arc_array_count(arc);
+        GLfloat ps[count];
+        convert_es_arc(arc, ps, 0);
+
+        glVertexPointer(2, GL_FLOAT, 0, ps);
+        if (filling && count > 4)
+        {
+            glDrawArrays(GL_TRIANGLE_FAN, 0, count / 2);
+        }
+        else
+        {
+            glDrawArrays(GL_LINE_STRIP, 0, count / 2);
+        }
+    }
+    #else
+    {
+        GLfloat radius = arc.radius;
+        if (GLfloatValidValue > radius)
+        {
+            return;
+        }
+
+        Interval angle = arc.angle;
+        normalize_angle(&angle.start);
+        normalize_angle(&angle.end);
+        GLboolean clockwise = arc.clockwise;
+        angle.start *= M_PI / 180;
+        angle.end *= M_PI / 180;
+        Point center = arc.center;
+
+        GLfloat radianAccuracy;
+        radianAccuracy = 2.F / (arc.radius * get_screen_max_size());
+        GLfloat i;
+        if (is_GLfloat_less(angle.start, angle.end, true, GLfloatValidValue))
+        {
+            if (!clockwise)
+                for (i = angle.start; is_GLfloat_less(i, angle.end,
+                        true, GLfloatValidValue); i += radianAccuracy)
+                    glVertex2f(center.x + radius * cos(i), center.y + radius * sin(i));
+            else
+            {
+                for (i = angle.start; is_GLfloat_more(i, 0,
+                        false, GLfloatValidValue); i -= radianAccuracy)
+                    glVertex2f(center.x + radius * cos(i), center.y + radius * sin(i));
+                for (i = 2 * M_PI; is_GLfloat_more(i, angle.end,
+                        true, GLfloatValidValue); i -= radianAccuracy)
+                    glVertex2f(center.x + radius * cos(i), center.y + radius * sin(i));
+            }
+        }
+        else // if (is_GLfloat_more(angle.start, angle.end, false, GLfloatValidValue))
+        {
+            if (!clockwise)
+            {
+                for (i = angle.start; is_GLfloat_less(i, 2 * M_PI,
+                        false, GLfloatValidValue); i += radianAccuracy)
+                    glVertex2f(center.x + radius * cos(i), center.y + radius * sin(i));
+                for (i = 0; is_GLfloat_less(i, angle.end,
+                        true, GLfloatValidValue); i += radianAccuracy)
+                    glVertex2f(center.x + radius * cos(i), center.y + radius * sin(i));
+            }
+            else
+                for (i = angle.start; is_GLfloat_more(i, angle.end,
+                        true, GLfloatValidValue); i -= radianAccuracy)
+                    glVertex2f(center.x + radius * cos(i), center.y + radius * sin(i));
+        }
+    }
+    #endif // ES_1_0
+} // draw_arc
+
+void sgpi_line_join(
+            GLenum joinStyle,
+            GLboolean closeOrOpen,
+            const Point* points,
+            GLuint pointCount,
+            GLfloat edgeLength)
+{
+    if (pointCount < 3)
+    {
+        return;
+    }
+
+    GLfloat width = 1.F / get_screen_max_size();
+    if (is_GLfloat_less(edgeLength, width, false, GLfloatValidValue))
+    {
+        return;
+    }
+
+    if (joinStyle == LineCorner_Bevel)
+    {
+        fill_linecorner_bevel(closeOrOpen, points, pointCount, edgeLength);
+    }
+} // sgpi_line_join
+
+调用内部更深层的图形计算与处理算法 - 略
+

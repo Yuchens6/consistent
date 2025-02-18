@@ -4,6 +4,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Rectangle extends Usual {
     private Point firstPoint;
     private Point thirdPoint;
@@ -113,7 +118,12 @@ public class Rectangle extends Usual {
         String pathFromRoot = element.getAttribute("value");
         rectangle.setPathFromRoot(pathFromRoot);
         rectangle = absProperties(nodeList.item(3), rectangle);
-        System.out.println(nodeList.item(3).getNodeName());
+        return rectangle;
+    }
+
+    public Rectangle generateRectangle(LinkedList<String> node) {
+        Rectangle rectangle = new Rectangle();
+        rectangle = absProperties(node, rectangle);
         return rectangle;
     }
 
@@ -163,6 +173,87 @@ public class Rectangle extends Usual {
         return rectangle;
     }
 
+    private Rectangle absProperties(LinkedList<String> node, Rectangle rectangle){
+        int len = node.size();
+        Texture texture = new Texture();
+        for (int i = 0; i < len; i++) {
+            String[] child = node.get(i).split(" ");
+            if(child.length>2){
+                if(child[1].startsWith("firstPoint")){
+                    Point point = new Point();
+                    LinkedList<String> strs = absNum(child[3]);
+                    System.out.println(child[3]);
+                    point.setX(strs.get(0));
+                    point.setY(strs.get(1));
+                    rectangle.setFirstPoint(point);
+                }
+                else if(child[1].startsWith("thirdPoint")){
+                    Point point = new Point();
+                    LinkedList<String> strs = absNum(child[3]);
+                    point.setX(strs.get(0));
+                    point.setY(strs.get(1));
+                    rectangle.setThirdPoint(point);
+                }
+                else if(child[0].endsWith("lineStipple")){
+                    rectangle.setLineStipple(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("lineCap")){
+
+                    rectangle.setLineCap(child[2].replace("\"", "").replace(";", ""));
+                }
+                else if(child[0].endsWith("haloing")){
+                    rectangle.setHaloing(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("haloColor")){
+                    rectangle.setHaloColor(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("outlineColor")){
+                    rectangle.setOutlineColor(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("outlineOpacity")){
+                    rectangle.setOutlineOpacity(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("fillColor")){
+                    rectangle.setFillColor(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("fillOpacity")){
+                    rectangle.setFillOpacity(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("polygonSmooth")){
+                    rectangle.setPolygonSmooth(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("horizAlign")){
+                    texture.setHorizAlign(child[2].replace("\"", "").replace(";", ""));
+                }
+                else if(child[0].endsWith("vertAlign")){
+                    texture.setVertAlign(child[2].replace("\"", "").replace(";", ""));
+                }
+                else if(child[0].endsWith("horizPattern")){
+                    texture.setHorizPattern(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("vertPattern")){
+                    texture.setVertPattern(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("id")){
+                    texture.setTextureId(child[2].replace(";", "").trim());
+                }
+                else if(child[0].endsWith("texture")){
+                    rectangle.setTexture(texture);
+                }
+                else if(child[0].endsWith("modulate")){
+                    rectangle.setModulate(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("tessellate")){
+                    rectangle.setTessellate(child[2].replace(";", ""));
+                }
+                else if(child[0].endsWith("lineWidth")){
+                    rectangle.setLineWidth(child[2].replace(";", ""));
+                }
+            }
+        }
+        return rectangle;
+    }
+
     @Override
     public String toString() {
         return "Rectangle{" + getPathFromRoot() +
@@ -176,5 +267,61 @@ public class Rectangle extends Usual {
                 ", modulate='" + getModulate() + '\'' +
                 ", tessellate='" + getTessellate() + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!super.equals(o)) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rectangle rectangle = (Rectangle) o;
+        if(!firstPoint.equals(rectangle.firstPoint)){
+            System.out.println("firstPoint is wrong"+firstPoint+rectangle.firstPoint);
+            return false;
+        }
+        if(!thirdPoint.equals(rectangle.thirdPoint)){
+            System.out.println("thirdPoint is wrong");
+            return false;
+        }
+//        if(!fillColor.equals(rectangle.fillColor)){
+//            System.out.println("fillColor is wrong");
+//            return false;
+//        }
+        if(!fillOpacity.equals(rectangle.fillOpacity)){
+            System.out.println("fillOpacity is wrong");
+            return false;
+        }
+        if(!polygonSmooth.equals(rectangle.getPolygonSmooth())){
+            System.out.println("polygonSmooth is wrong");
+            return false;
+        }
+        if(!texture.equals(rectangle.texture)){
+            System.out.println("texture is wrong");
+            return false;
+        }
+        if (!modulate.equals(rectangle.modulate)){
+            System.out.println("modulate is wrong");
+            return false;
+        }
+        if(!tessellate.equals(rectangle.tessellate)){
+            System.out.println("tessellate is wrong");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstPoint, thirdPoint, fillColor, fillOpacity, polygonSmooth, texture, textureControl, modulate, tessellate);
+    }
+
+    private LinkedList<String> absNum(String str){
+        Pattern pattern = Pattern.compile("(\\d+)");  // 匹配一个或多个数字
+        Matcher matcher = pattern.matcher(str);
+        LinkedList<String> list = new LinkedList<>();
+        while (matcher.find()) {
+            list.add(matcher.group(1));
+        }
+        return list;
     }
 }

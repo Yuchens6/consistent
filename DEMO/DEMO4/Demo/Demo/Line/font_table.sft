@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?dom version="R16" ?>
+
+<?scade_release version="R16" ?>
+
+<fontTable generateAsBitmap="true" generateHalo="true" name="font_table" size="4">
+    <fontDefinition index="0" path="resource/font/slkscr.ttf"/>
+    <fontDefinition index="1" path="resource/font/slkscrb.ttf"/>
+    <fontDefinition index="2" path="resource/font/slkscre.ttf"/>
+    <fontDefinition index="3" path="resource/font/slkscreb.ttf"/>
+</fontTable>
+
+<!-- crc32 : 2291748908 -->
+
